@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raghav Raman — Python Backend & Data Engineer</title>
+<meta name="description" content="Raghav Raman — Python backend, data engineering and AI/RAG systems. FastAPI, Django, ETL, FAISS, OSRM.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1B2A49;--soft:#4D5B7A;--sun:#F0651A;--sky:#2563EB;--leaf:#138A5B;--berry:#D6336C;--vio:#6D4AE8;
+--disp:'Bricolage Grotesque',system-ui,sans-serif;--body:'Figtree',system-ui,sans-serif;--mono:'Fira Code',ui-monospace,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#FFE9CF;color:var(--ink);font-family:var(--body);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--sky);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+
+/* sky layers */
+#sky{position:fixed;inset:0;z-index:-5}
+#sun{position:fixed;top:0;left:0;width:120px;height:120px;z-index:-4;pointer-events:none;will-change:transform}
+#sun i{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FFF3B0,#FFC94D 60%,#FFA62B);box-shadow:0 0 60px 30px rgba(255,190,70,.45)}
+#sun::before{content:'';position:absolute;inset:-90px;border-radius:50%;background:repeating-conic-gradient(rgba(255,196,80,.28) 0 6deg,transparent 6deg 18deg);-webkit-mask-image:radial-gradient(circle,transparent 30%,#000 45%,transparent 70%);mask-image:radial-gradient(circle,transparent 30%,#000 45%,transparent 70%);animation:spin 50s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cloud{position:fixed;z-index:-3;left:-40vw;width:10em;height:3em;background:#fff;border-radius:3em;opacity:.85;pointer-events:none;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:4.4em;height:4.4em;top:-2em;left:1.5em}
+.cloud::after{width:3.4em;height:3.4em;top:-1.4em;left:5em}
+@keyframes drift{to{transform:translateX(190vw)}}
+.bird{position:fixed;z-index:-2;left:0;width:26px;pointer-events:none;color:var(--ink);opacity:.55;animation:fly linear infinite}
+@keyframes fly{from{transform:translate(-8vw,0)}50%{transform:translate(50vw,-36px)}to{transform:translate(108vw,8px)}}
+#beam{position:fixed;top:0;left:0;width:420px;height:420px;z-index:40;pointer-events:none;opacity:0;transition:opacity .6s;background:radial-gradient(circle,rgba(255,226,140,.38),transparent 65%);will-change:transform}
+
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.88);border-bottom:1px solid rgba(27,42,73,.12)}
+.nav{max-width:1120px;margin:0 auto;padding:13px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.mark{font-family:var(--disp);font-weight:800;font-size:1rem;display:flex;align-items:center;gap:10px}
+.mark i{width:14px;height:14px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 4px rgba(240,101,26,.2);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 9px rgba(240,101,26,0)}}
+.links{display:flex;gap:22px;font-family:var(--mono);font-size:.78rem}
+.links a{color:var(--soft);position:relative;transition:color .2s}
+.links a::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:2px;background:var(--sun);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.links a:hover{color:var(--ink)}.links a:hover::after{transform:scaleX(1)}
+.cta{font-family:var(--mono);font-size:.78rem;background:var(--ink);color:#fff;padding:9px 16px;border-radius:99px;transition:background .2s,transform .2s}
+.cta:hover{background:var(--sun);transform:translateY(-2px)}
+.tog{display:none;background:none;border:2px solid var(--ink);color:var(--ink);padding:5px 12px;font-family:var(--mono);font-size:.75rem;border-radius:99px;cursor:pointer}
+
+.hero{padding:80px 0 70px;display:grid;grid-template-columns:1.2fr .8fr;gap:44px;align-items:center}
+.tag{font-family:var(--mono);font-size:.76rem;color:#B45309;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+h1{font-family:var(--disp);font-weight:800;font-size:clamp(2.8rem,7.4vw,5.6rem);line-height:.98;letter-spacing:-.035em;margin-bottom:20px;background:linear-gradient(100deg,var(--ink) 25%,var(--sun) 62%,var(--berry));background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:pan 6s ease-in-out infinite alternate}
+@keyframes pan{to{background-position:100% 0}}
+.role{font-family:var(--mono);font-size:1.02rem;color:var(--sky);font-weight:500;min-height:1.7em;margin-bottom:14px}
+.role::after{content:'|';margin-left:2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.lede{color:var(--soft);font-size:1.08rem;max-width:50ch;margin-bottom:28px}
+.btns{display:flex;gap:14px;flex-wrap:wrap}
+.b1,.b2{font-family:var(--mono);font-size:.85rem;padding:13px 24px;border-radius:99px;transition:transform .2s,box-shadow .2s}
+.b1{background:var(--sun);color:#fff;font-weight:500;box-shadow:0 6px 0 #B84A0F}
+.b1:hover{transform:translateY(3px);box-shadow:0 3px 0 #B84A0F}
+.b2{background:#fff;border:2px solid var(--ink);box-shadow:0 6px 0 var(--ink)}
+.b2:hover{transform:translateY(3px);box-shadow:0 3px 0 var(--ink)}
+.route{width:100%;height:auto;max-width:430px;margin:0 auto;display:block;background:rgba(255,255,255,.6);border-radius:32px;box-shadow:0 20px 50px rgba(27,42,73,.12)}
+.trail{stroke-dasharray:4 8;animation:dash 1.4s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-24}}
+
+.ribbon{overflow:hidden;padding:13px 0;background:var(--ink);color:#fff}
+.track{display:flex;gap:30px;width:max-content;font-family:var(--mono);font-size:.8rem;letter-spacing:.08em;animation:slide 32s linear infinite}
+.track em{color:#FFC94D;font-style:normal}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+section.s{padding:84px 0}
+.sh{margin-bottom:38px}
+.zone{font-family:var(--mono);font-size:.76rem;color:#B45309;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+h2{font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,3.8vw,2.8rem);letter-spacing:-.025em;line-height:1.08}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}
+.rv.in{opacity:1;transform:none}
+
+.ab{display:grid;grid-template-columns:1.2fr .8fr;gap:44px}
+.ab p{font-size:1.06rem;max-width:56ch}
+.ab p+p{margin-top:16px;color:var(--soft)}
+.card{--c:var(--sun);position:relative;overflow:hidden;background:rgba(255,255,255,.86);border:1px solid rgba(27,42,73,.1);border-radius:22px;box-shadow:0 10px 30px rgba(27,42,73,.08);transition:transform .25s,box-shadow .25s,border-color .25s}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+.card::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--c) 16%,transparent),transparent 70%)}
+.card:hover{transform:translateY(-6px);border-color:var(--c);box-shadow:0 18px 40px color-mix(in srgb,var(--c) 28%,transparent)}
+.card:hover::after{opacity:1}
+.facts{display:grid;grid-template-columns:1fr 1fr;padding:6px 0}
+.facts div{padding:14px 20px}
+.facts dt{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--soft)}
+.facts dd{font-weight:600;font-size:.95rem}
+
+.sk{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.sk .card{padding:22px 22px 22px 26px}
+.sk h3{font-family:var(--disp);font-size:1.05rem;font-weight:800;color:var(--c);margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips span{font-family:var(--mono);font-size:.72rem;padding:4px 10px;border-radius:99px;border:1.5px solid var(--c);background:#fff;transition:transform .2s,background .2s}
+.chips span:hover{transform:translateY(-3px) rotate(-2deg);background:color-mix(in srgb,var(--c) 18%,#fff)}
+
+.pj{display:grid;gap:22px}
+.pj .card{padding:28px 28px 28px 32px;display:grid;grid-template-columns:84px 1fr;gap:22px}
+.n{font-family:var(--disp);font-weight:800;font-size:3rem;line-height:1;color:var(--c)}
+.pj h3{font-family:var(--disp);font-weight:800;font-size:1.25rem;line-height:1.25;margin-bottom:6px}
+.sub{font-family:var(--mono);font-size:.72rem;color:var(--soft);margin-bottom:12px}
+.pj ul{padding-left:18px;font-size:.94rem}
+.pj li{margin-bottom:5px}
+.pj li::marker{color:var(--c)}
+.pj2{margin-top:22px;grid-template-columns:repeat(2,1fr)}
+.pj2 .card{grid-template-columns:1fr;padding:24px 24px 24px 30px}
+.pj2 .n{font-size:1.8rem}
+
+/* certifications accordion */
+.cert-accordion{max-width:1000px}
+.cert-item{background:rgba(255,255,255,.86);border:1px solid rgba(27,42,73,.1);border-radius:18px;margin-bottom:14px;overflow:hidden;box-shadow:0 8px 24px rgba(27,42,73,.07)}
+.cert-header{width:100%;background:transparent;border:none;cursor:pointer;text-align:left;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;font-family:var(--disp);font-size:1.05rem;font-weight:800;color:var(--ink);transition:background .2s}
+.cert-header:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.cert-title{display:flex;align-items:center;gap:12px}
+.cert-title svg,.cert-icon{width:22px;height:22px;flex-shrink:0}
+.cert-title svg{color:var(--accent)}
+.cert-icon{color:var(--soft);transition:transform .3s}
+.cert-header[aria-expanded="true"] .cert-icon{transform:rotate(180deg)}
+.cert-panel{height:0;overflow:hidden;transition:height .35s ease}
+.cert-panel-inner{padding:6px 22px 24px}
+.cert-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:14px}
+.cert-card{background:#fff;border:1px solid rgba(27,42,73,.1);border-top:3px solid var(--accent);border-radius:12px;padding:14px 16px;transition:transform .2s,box-shadow .2s}
+.cert-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(27,42,73,.12)}
+.cert-card h4{font-weight:600;font-size:.9rem;margin-bottom:6px}
+.cert-card p{font-size:.85rem;color:var(--soft);line-height:1.5}
+
+footer{padding:90px 0 40px;text-align:center;background:linear-gradient(180deg,transparent,rgba(255,170,90,.35))}
+footer h2{font-size:clamp(2.1rem,5vw,3.5rem);margin-bottom:14px}
+footer .i{color:var(--soft);max-width:48ch;margin:0 auto 32px}
+.cl{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:46px}
+.cl a{font-family:var(--mono);font-size:.84rem;background:#fff;border:2px solid var(--ink);border-radius:99px;padding:10px 20px;box-shadow:0 4px 0 var(--ink);transition:transform .2s,box-shadow .2s,background .2s}
+.cl a:hover{transform:translateY(3px);box-shadow:0 1px 0 var(--ink);background:#FFE28A}
+.fn{font-family:var(--mono);font-size:.76rem;color:var(--soft)}
+
+#gauge{position:fixed;left:16px;bottom:16px;z-index:35;font-family:var(--mono);font-size:.74rem;background:rgba(255,255,255,.92);border:1px solid rgba(27,42,73,.15);border-radius:14px;padding:9px 14px;min-width:170px;box-shadow:0 8px 22px rgba(27,42,73,.14)}
+#gauge small{display:block;color:#B45309;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em}
+#gauge b{font-weight:500}
+#gbar{height:4px;background:rgba(27,42,73,.12);border-radius:4px;margin-top:6px;overflow:hidden}
+#bar{height:100%;width:0;background:linear-gradient(90deg,#FFC94D,var(--sun),var(--berry))}
+
+@media(max-width:860px){.hero,.ab{grid-template-columns:1fr}.route{max-width:340px}.sk{grid-template-columns:1fr 1fr}.pj2{grid-template-columns:1fr}}
+@media(max-width:640px){
+.tog{display:block}.cta{display:none}
+.links{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;gap:0;border-bottom:1px solid rgba(27,42,73,.15)}
+.links.open{display:flex}.links a{padding:14px 28px;border-top:1px solid rgba(27,42,73,.08)}
+.sk{grid-template-columns:1fr}.pj .card{grid-template-columns:1fr;padding:22px 22px 22px 26px}.hero{padding-top:50px}
+.cert-header{padding:16px 18px;font-size:.96rem}.cert-panel-inner{padding:4px 18px 20px}
+#sun{transform-origin:0 0}#gauge{left:10px;bottom:10px;min-width:0}}
+@media(prefers-reduced-motion:reduce){.cloud,.bird,#sun::before,.track,h1,.trail,.mark i{animation:none}.rv{opacity:1;transform:none;transition:none}.cert-panel{transition:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="folder" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6a2 2 0 0 1 2-2h4.2c.6 0 1.2.3 1.6.8L12 6h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"/></symbol>
+  <symbol id="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="bird" viewBox="0 0 26 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 8Q7 -2 13 7Q19 -2 25 8"/></symbol>
+</svg>
+<div id="sky"></div>
+<div id="sun"><i></i></div>
+<div class="cloud" style="top:9%;font-size:18px;animation-duration:110s;animation-delay:-30s"></div>
+<div class="cloud" style="top:24%;font-size:26px;animation-duration:150s;animation-delay:-90s;opacity:.7"></div>
+<div class="cloud" style="top:46%;font-size:14px;animation-duration:95s;animation-delay:-10s"></div>
+<div class="cloud" style="top:63%;font-size:22px;animation-duration:130s;animation-delay:-60s;opacity:.75"></div>
+<div class="cloud" style="top:80%;font-size:16px;animation-duration:105s;animation-delay:-45s;opacity:.65"></div>
+<svg class="bird" style="top:17%;animation-duration:26s;animation-delay:-4s"><use href="#bird"/></svg>
+<svg class="bird" style="top:33%;animation-duration:34s;animation-delay:-18s;width:20px"><use href="#bird"/></svg>
+<svg class="bird" style="top:55%;animation-duration:30s;animation-delay:-9s;width:22px"><use href="#bird"/></svg>
+<div id="beam"></div>
+
+<header>
+  <div class="nav">
+    <a class="mark" href="#top"><i></i>Raghav Raman</a>
+    <nav class="links" id="links">
+      <a href="#about">about</a><a href="#skills">skills</a><a href="#projects">projects</a><a href="#certifications">certifications</a><a href="#contact">contact</a>
+    </nav>
+    <button class="tog" id="tog" aria-label="Toggle navigation" aria-expanded="false">menu</button>
+    <a class="cta" href="mailto:the.raghav.raman@gmail.com">say hello</a>
+  </div>
+</header>
+
+<main id="top">
+  <section data-zone="Sunrise"><div class="wrap hero">
+    <div>
+      <p class="tag">Bihar, India · Python · Data · AI</p>
+      <h1>Raghav<br>Raman</h1>
+      <p class="role" id="role">Python backend engineer</p>
+      <p class="lede">Backend and data engineer with 4 years of experience building APIs, ETL pipelines and AI search systems with FastAPI, Django, MySQL, FAISS and RAG, deployed on Linux and Nginx.</p>
+      <div class="btns"><a class="b1" href="#projects">Follow the sun ↓</a><a class="b2" href="mailto:the.raghav.raman@gmail.com">Get in touch</a></div>
+    </div>
+    <svg class="route" viewBox="0 0 380 380" fill="none" aria-hidden="true">
+      <path id="rp" class="trail" d="M40 310C70 230 110 260 150 215S230 170 250 120S320 60 345 70" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/>
+      <g font-family="Fira Code,monospace" font-size="12" font-weight="500" fill="#1B2A49">
+        <circle cx="40" cy="310" r="9" fill="#138A5B"/><text x="56" y="338">SQL</text>
+        <circle cx="150" cy="215" r="9" fill="#F0651A"/><text x="164" y="246">ETL</text>
+        <circle cx="250" cy="120" r="9" fill="#D6336C"/><text x="200" y="102">API</text>
+        <circle cx="345" cy="70" r="9" fill="#6D4AE8"/><text x="298" y="52">RAG</text>
+      </g>
+      <g><path d="M0 0L-18 -8L-12 0L-18 8Z" fill="#1B2A49"/><path d="M0 0L-12 0L-18 8Z" fill="#4D5B7A"/><animateMotion dur="9s" repeatCount="indefinite" rotate="auto"><mpath href="#rp"/></animateMotion></g>
+    </svg>
+  </div></section>
+
+  <div class="ribbon" aria-label="Technical stack"><div class="track">
+    <span>PYTHON</span><em>✦</em><span>FASTAPI</span><em>✦</em><span>DJANGO</span><em>✦</em><span>SQLALCHEMY</span><em>✦</em><span>MYSQL</span><em>✦</em><span>FAISS</span><em>✦</em><span>OPENAI</span><em>✦</em><span>RAG</span><em>✦</em><span>ETL</span><em>✦</em><span>CELERY</span><em>✦</em><span>REDIS</span><em>✦</em><span>DOCKER</span><em>✦</em><span>NGINX</span><em>✦</em>
+    <span>PYTHON</span><em>✦</em><span>FASTAPI</span><em>✦</em><span>DJANGO</span><em>✦</em><span>SQLALCHEMY</span><em>✦</em><span>MYSQL</span><em>✦</em><span>FAISS</span><em>✦</em><span>OPENAI</span><em>✦</em><span>RAG</span><em>✦</em><span>ETL</span><em>✦</em><span>CELERY</span><em>✦</em><span>REDIS</span><em>✦</em><span>DOCKER</span><em>✦</em><span>NGINX</span><em>✦</em>
+  </div></div>
+
+  <section class="s" id="about" data-zone="Morning"><div class="wrap">
+    <div class="sh rv"><p class="zone">01 · Morning</p><h2>About me</h2></div>
+    <div class="ab">
+      <div class="rv">
+        <p>I'm a Python developer and data engineer with 4 years of experience designing, building and deploying scalable backend, web, desktop and automation systems. I'm strongest in FastAPI, Django, REST APIs, SQL performance work and ETL, and recently I've gone deep on AI data platforms: semantic search, embeddings and vector retrieval.</p>
+        <p>Away from the keyboard I'm drawn to philosophy, poetry and creative exploration, which keeps the engineering thoughtful.</p>
+      </div>
+      <dl class="card facts rv" style="--c:#F0651A">
+        <div><dt>Based</dt><dd>Bihar, India</dd></div>
+        <div><dt>Experience</dt><dd>4 years</dd></div>
+        <div><dt>Focus</dt><dd>Backend · ETL · AI search</dd></div>
+        <div><dt>Education</dt><dd>B.Tech, Electronics &amp; Comm. (2021)</dd></div>
+      </dl>
+    </div>
+  </div></section>
+
+  <section class="s" id="skills" data-zone="Late morning"><div class="wrap">
+    <div class="sh rv"><p class="zone">02 · Late morning</p><h2>Technical skills</h2></div>
+    <div class="sk">
+      <div class="card rv" style="--c:#2563EB"><h3>Backend</h3><div class="chips"><span>Python</span><span>FastAPI</span><span>Django</span><span>DRF</span><span>SQLAlchemy</span><span>Pydantic</span><span>JWT</span><span>Webhooks</span><span>API Versioning</span></div></div>
+      <div class="card rv" style="--c:#D6336C"><h3>AI / LLM</h3><div class="chips"><span>OpenAI API</span><span>Gemini API</span><span>RAG</span><span>LangChain</span><span>FAISS</span><span>Embeddings</span><span>Semantic Search</span><span>Prompt Eng.</span><span>LangGraph</span><span>Ollama</span><span>MCP</span></div></div>
+      <div class="card rv" style="--c:#138A5B"><h3>Data Engineering</h3><div class="chips"><span>ETL Pipelines</span><span>Data Cleaning</span><span>Validation</span><span>Transformation</span><span>Excel / CSV / API</span><span>Large Datasets</span></div></div>
+      <div class="card rv" style="--c:#F0651A"><h3>Databases</h3><div class="chips"><span>MySQL</span><span>PostgreSQL</span><span>SQLite</span><span>MSSQL</span><span>Indexing</span><span>Query Optimization</span><span>Pagination</span><span>Cache Tables</span></div></div>
+      <div class="card rv" style="--c:#6D4AE8"><h3>Async &amp; Queues</h3><div class="chips"><span>Celery</span><span>Redis</span><span>Valkey</span><span>Background Jobs</span><span>Cron</span><span>API Caching</span></div></div>
+      <div class="card rv" style="--c:#2563EB"><h3>Cloud &amp; DevOps</h3><div class="chips"><span>AWS</span><span>GCP</span><span>Linux</span><span>Nginx</span><span>Docker</span><span>CI/CD</span><span>Git</span><span>Postman</span><span>Swagger</span><span>HTTPS/SSL</span></div></div>
+      <div class="card rv" style="--c:#D6336C"><h3>Automation &amp; Desktop</h3><div class="chips"><span>Playwright</span><span>Selenium</span><span>Pytest</span><span>PyQt5/6</span><span>Tkinter</span><span>PyAutoGUI</span><span>OpenCV</span><span>FFmpeg</span><span>OCR</span><span>HLS/m3u8</span><span>OSRM</span></div></div>
+      <div class="card rv" style="--c:#138A5B"><h3>Web</h3><div class="chips"><span>HTML</span><span>CSS</span><span>JavaScript</span></div></div>
+      <div class="card rv" style="--c:#F0651A"><h3>Legacy ETL Tools</h3><div class="chips"><span>SQL</span><span>PySpark</span><span>Snowflake</span><span>IICS</span><span>Informatica PowerCenter</span></div></div>
+    </div>
+  </div></section>
+
+  <section class="s" id="projects" data-zone="Midday"><div class="wrap">
+    <div class="sh rv"><p class="zone">03 · Midday</p><h2>Featured projects</h2></div>
+    <div class="pj">
+      <article class="card rv" style="--c:#2563EB"><div class="n">01</div><div>
+        <h3>GD Data Platform: AI Training Data Library &amp; Video Hosting</h3>
+        <p class="sub">Python · FastAPI · SQLAlchemy · MySQL · FAISS · OpenAI · HLS · Nginx</p>
+        <ul>
+          <li>Built and managed the backend for an AI training data platform that hosts, searches and streams human trajectory datasets for Computer Use Agents.</li>
+          <li>Designed database-level multi-filter search (tool, category, OS, duration, action count, price, trajectory quality) with pagination, indexes and selected-column queries.</li>
+          <li>Implemented RAG-style semantic search with FAISS and OpenAI embeddings across tasks, videos, prompts and trajectories.</li>
+          <li>Added HLS/m3u8 conversion and metadata APIs; cut response times with query tuning, cache tables and optimized joins.</li>
+        </ul></div></article>
+      <article class="card rv" style="--c:#D6336C"><div class="n">02</div><div>
+        <h3>SROT: Intelligent Data Recording Agent</h3>
+        <p class="sub">Python · PyQt6 · OpenCV · FFmpeg · Playwright · Pynput</p>
+        <ul>
+          <li>Desktop agent that records screen activity, keystrokes, mouse movement and scrolling as structured logs for Computer Use Agent training data.</li>
+          <li>Real-time event logging, activity grouping and browser interaction capture with Playwright-based link extraction.</li>
+          <li>Shipped several production iterations used internally for dataset preparation and quality improvement.</li>
+        </ul></div></article>
+      <article class="card rv" style="--c:#F0651A"><div class="n">03</div><div>
+        <h3>OSRM Routing &amp; Rider Tracking System</h3>
+        <p class="sub">Python · Django · OSRM · MySQL · Linux · Nginx · ETL</p>
+        <ul>
+          <li>Self-hosted a private OSRM instance with India map data (extract, partition, customize) for route distances with zero third-party routing cost.</li>
+          <li>Built the Django API behind the Rider Android App for two-wheeler delivery agents: attendance, routes and daily earnings.</li>
+          <li>Wrote ETL pipelines to clean, validate and transform large Excel, CSV, API and database datasets.</li>
+        </ul></div></article>
+    </div>
+    <div class="pj pj2">
+      <article class="card rv" style="--c:#138A5B"><div class="n">04</div><div><h3>RAG Document Q&amp;A API</h3><p class="sub">FastAPI · LangChain · FAISS · Redis · Celery</p><ul><li>Ingestion, chunking, embedding and vector indexing pipeline with queue-based background processing.</li><li>Retrieval endpoint returning grounded LLM answers as structured JSON.</li></ul></div></article>
+      <article class="card rv" style="--c:#6D4AE8"><div class="n">05</div><div><h3>ETL Validation Toolkit</h3><p class="sub">Python · Pydantic · Pytest · MySQL</p><ul><li>Reusable pipeline for cleaning and schema-validating CSV, Excel and API feeds before load.</li><li>Rejected-row reporting and automated tests to keep bad data out of production tables.</li></ul></div></article>
+      <article class="card rv" style="--c:#2563EB"><div class="n">06</div><div><h3>Django Blog Application</h3><p class="sub">Django · HTML · CSS · JavaScript</p><ul><li>Blog platform with authentication, author workflows, search and category filtering.</li></ul></div></article>
+      <article class="card rv" style="--c:#D6336C"><div class="n">07</div><div><h3>E-Commerce Website</h3><p class="sub">Django · HTML · CSS · JavaScript</p><ul><li>Product browsing, search, cart, checkout and order tracking, with an admin dashboard for products, users, orders and delivery status.</li></ul></div></article>
+    </div>
+  </div></section>
+
+  <section class="s" id="certifications" data-zone="Afternoon"><div class="wrap">
+    <div class="sh rv"><p class="zone">04 · Afternoon</p><h2>Certifications</h2></div>
+    <div class="cert-accordion">
+
+      <div class="cert-item rv">
+        <button class="cert-header" aria-expanded="false" aria-controls="panel-cloud" id="acc-cloud" style="--accent:#2563EB;">
+          <span class="cert-title"><svg><use href="#folder"/></svg>Cloud &amp; Infrastructure</span><svg class="cert-icon"><use href="#chev"/></svg>
+        </button>
+        <div id="panel-cloud" class="cert-panel" role="region" aria-labelledby="acc-cloud"><div class="cert-panel-inner"><div class="cert-cards" style="--accent:#2563EB">
+          <div class="cert-card"><h4>Oracle Cloud Infrastructure 2024 Generative AI Certified Professional</h4><p>Issued by Oracle. Certification in Oracle Cloud generative AI solutions.</p></div>
+          <div class="cert-card"><h4>AWS Cloud Quest: Cloud Practitioner</h4><p>Issued by Amazon Web Services (AWS). Gamified cloud practitioner training with hands-on labs.</p></div>
+          <div class="cert-card"><h4>AWS Fundamentals Specialization</h4><p>Issued by Amazon Web Services. Core AWS services, architectures, and fundamentals.</p></div>
+          <div class="cert-card"><h4>Google Cloud Computing Foundations Certificate</h4><p>Issued by Google Cloud. Basics of compute, storage, and networking on GCP.</p></div>
+          <div class="cert-card"><h4>Data Warehousing Workshop by Snowflake</h4><p>Issued by Snowflake. Modern data warehousing best practices and patterns.</p></div>
+          <div class="cert-card"><h4>Cloud Hero: Enhance Data Warehouses with BigQuery</h4><p>Issued by Google. BigQuery optimization and advanced analytics techniques.</p></div>
+          <div class="cert-card"><h4>Generative AI Fundamentals by Databricks</h4><p>Issued by Databricks. Large Language Models and vector workflows on Databricks Lakehouse.</p></div>
+          <div class="cert-card"><h4>NASA Open Science 101</h4><p>Issued by NASA. Open science principles and reproducibility.</p></div>
+        </div></div></div>
+      </div>
+
+      <div class="cert-item rv">
+        <button class="cert-header" aria-expanded="false" aria-controls="panel-data" id="acc-data" style="--accent:#F0651A;">
+          <span class="cert-title"><svg><use href="#folder"/></svg>Data &amp; Analytics</span><svg class="cert-icon"><use href="#chev"/></svg>
+        </button>
+        <div id="panel-data" class="cert-panel" role="region" aria-labelledby="acc-data"><div class="cert-panel-inner"><div class="cert-cards" style="--accent:#F0651A">
+          <div class="cert-card"><h4>Meta Data Analyst Professional Certificate</h4><p>Issued by Meta via Coursera. Analytics lifecycle and visualization.</p></div>
+          <div class="cert-card"><h4>Google Data Analytics Professional Certificate</h4><p>Issued by Coursera (Google). Data cleaning, visualization, foundational analytics with SQL, Tableau, R.</p></div>
+          <div class="cert-card"><h4>Google Advanced Data Analytics Professional Certificate</h4><p>Issued by Coursera (Google). Advanced data analysis, machine learning, regression, statistical modeling.</p></div>
+          <div class="cert-card"><h4>Introduction to MongoDB by MongoDB</h4><p>Issued by MongoDB University. NoSQL data modeling and CRUD operations.</p></div>
+          <div class="cert-card"><h4>Get Started with Tableau</h4><p>Issued by Tableau/Coursera. Interactive dashboards and storytelling.</p></div>
+          <div class="cert-card"><h4>MongoDB SI Associate Certification</h4><p>Issued by MongoDB. Operational skills and performance tuning.</p></div>
+          <div class="cert-card"><h4>IDMC Foundation Series Certification</h4><p>Issued by Informatica. Basics of Informatica Data Management Cloud and data governance.</p></div>
+          <div class="cert-card"><h4>Claire GPT by Informatica</h4><p>Issued by Informatica. AI-assisted data management capabilities.</p></div>
+        </div></div></div>
+      </div>
+
+      <div class="cert-item rv">
+        <button class="cert-header" aria-expanded="false" aria-controls="panel-tools" id="acc-tools" style="--accent:#D6336C;">
+          <span class="cert-title"><svg><use href="#folder"/></svg>Programming &amp; Tools</span><svg class="cert-icon"><use href="#chev"/></svg>
+        </button>
+        <div id="panel-tools" class="cert-panel" role="region" aria-labelledby="acc-tools"><div class="cert-panel-inner"><div class="cert-cards" style="--accent:#D6336C">
+          <div class="cert-card"><h4>Full Stack Generative and Agentic AI with Python</h4><p>Issued by Udemy (2026). Python, OpenAI/Gemini APIs, RAG with LangChain, vector databases, LangGraph and MCP concepts.</p></div>
+          <div class="cert-card"><h4>Python for Data Science by IBM</h4><p>Issued by IBM. Python programming for data analysis and science.</p></div>
+          <div class="cert-card"><h4>Version Control by Meta</h4><p>Issued by Meta. Git workflows and collaboration fundamentals.</p></div>
+          <div class="cert-card"><h4>Fundamentals of Agile Project Management by PMI</h4><p>Issued by Project Management Institute (PMI). Scrum, iterative delivery, agile concepts.</p></div>
+          <div class="cert-card"><h4>Quantum Computing for Everyone: Fractal</h4><p>Issued by Fractal. Introduction to qubits and quantum algorithms.</p></div>
+          <div class="cert-card"><h4>Confluent Fundamentals: Apache Kafka</h4><p>Issued by Confluent. Event streaming with Apache Kafka.</p></div>
+          <div class="cert-card"><h4>Micro Certification: Welcome to ServiceNow</h4><p>Issued by ServiceNow. Platform essentials and navigation.</p></div>
+        </div></div></div>
+      </div>
+
+      <div class="cert-item rv">
+        <button class="cert-header" aria-expanded="false" aria-controls="panel-mind" id="acc-mind" style="--accent:#138A5B;">
+          <span class="cert-title"><svg><use href="#folder"/></svg>Mindfulness &amp; Personal Development</span><svg class="cert-icon"><use href="#chev"/></svg>
+        </button>
+        <div id="panel-mind" class="cert-panel" role="region" aria-labelledby="acc-mind"><div class="cert-panel-inner"><div class="cert-cards" style="--accent:#138A5B">
+          <div class="cert-card"><h4>Know Thyself</h4><p>Issued by University of Edinburgh. Self-knowledge and reflection.</p></div>
+          <div class="cert-card"><h4>Mindfulness</h4><p>Issued by KAIST. Attention, presence, and mindfulness practice.</p></div>
+          <div class="cert-card"><h4>Communicating with Presence</h4><p>Issued by IESE Business School. Executive communication skills.</p></div>
+          <div class="cert-card"><h4>EF SET English Certificate</h4><p>Standardized English proficiency certification.</p></div>
+          <div class="cert-card"><h4>Learn with Workday by Workday</h4><p>Career and skills development.</p></div>
+        </div></div></div>
+      </div>
+
+    </div>
+  </div></section>
+</main>
+
+<footer id="contact" data-zone="Golden hour">
+  <div class="wrap">
+    <p class="zone rv">05 · Golden hour</p>
+    <h2 class="rv">Let's connect.</h2>
+    <p class="i rv">Have a backend, data pipeline or AI search project in mind? Let's build it properly.</p>
+    <div class="cl rv">
+      <a href="mailto:the.raghav.raman@gmail.com">the.raghav.raman@gmail.com</a>
+      <a href="https://www.linkedin.com/in/theraghavraman" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/theraghavraman" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.credly.com/users/raghav-raman/" target="_blank" rel="noopener">Credly</a>
+      <a href="https://www.credential.net/profile/ramanraghav/wallet" target="_blank" rel="noopener">Accredible</a>
+    </div>
+    <p class="fn">© 2026 Raghav Raman — built with Python, sunlight and a little SQL.</p>
+  </div>
+</footer>
+
+<div id="gauge" aria-hidden="true"><small id="zone">Sunrise</small>☀ <b id="clock">06:00</b><div id="gbar"><div id="bar"></div></div></div>
+
+<script>
+(function(){
+var rm=matchMedia('(prefers-reduced-motion: reduce)').matches,$=function(i){return document.getElementById(i)};
+var sky=$('sky'),sun=$('sun'),beam=$('beam');
+var K=[[255,214,170,255,244,224],[120,190,250,232,246,255],[255,190,120,255,236,205]];
+function pad(n){return n<10?'0'+n:''+n}
+function onScroll(){
+  var max=document.documentElement.scrollHeight-innerHeight,d=max>0?Math.min(1,Math.max(0,scrollY/max)):0;
+  var s=d<.5?0:1,t=d<.5?d*2:(d-.5)*2,a=K[s],b=K[s+1],c=[],i;
+  for(i=0;i<6;i++)c.push(Math.round(a[i]+(b[i]-a[i])*t));
+  sky.style.background='linear-gradient(180deg,rgb('+c[0]+','+c[1]+','+c[2]+'),rgb('+c[3]+','+c[4]+','+c[5]+'))';
+  var sc=innerWidth<640?.6:1,sx=innerWidth*(.08+.84*d)-60*sc,sy=60+(1-Math.sin(Math.PI*d))*150;
+  sun.style.transform='translate('+sx+'px,'+sy+'px) scale('+sc+')';
+  var m=Math.round(360+d*720);$('clock').textContent=pad(Math.floor(m/60))+':'+pad(m%60);
+  $('bar').style.width=(d*100)+'%';
+}
+var tick=false;
+addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(function(){onScroll();tick=false})}},{passive:true});
+addEventListener('resize',onScroll);onScroll();
+addEventListener('mousemove',function(e){beam.style.opacity=1;beam.style.transform='translate('+(e.clientX-210)+'px,'+(e.clientY-210)+'px)'},{passive:true});
+document.addEventListener('mousemove',function(e){var c=e.target.closest&&e.target.closest('.card');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')},{passive:true});
+
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+var zo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)$('zone').textContent=e.target.getAttribute('data-zone')})},{rootMargin:'-45% 0px -45% 0px'});
+document.querySelectorAll('[data-zone]').forEach(function(el){zo.observe(el)});
+
+var roles=['Python backend engineer','ETL & data pipelines','RAG & semantic search','APIs that stay fast at scale'],ri=0,ci=0,del=false,re=$('role');
+function type(){var s=roles[ri];re.textContent=s.slice(0,ci);
+  if(!del&&ci<s.length){ci++;setTimeout(type,70)}
+  else if(!del){del=true;setTimeout(type,1400)}
+  else if(ci>0){ci--;setTimeout(type,35)}
+  else{del=false;ri=(ri+1)%roles.length;setTimeout(type,300)}}
+if(!rm)type();
+if(rm){var rs=document.querySelector('.route');if(rs&&rs.pauseAnimations)rs.pauseAnimations()}
+
+var tog=$('tog'),links=$('links');
+tog.addEventListener('click',function(){var o=links.classList.toggle('open');tog.setAttribute('aria-expanded',String(o))});
+links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('open');tog.setAttribute('aria-expanded','false')})});
+
+/* certifications accordion */
+var items=document.querySelectorAll('.cert-item');
+items.forEach(function(item){
+  var h=item.querySelector('.cert-header'),p=item.querySelector('.cert-panel');
+  h.addEventListener('click',function(){
+    var ex=h.getAttribute('aria-expanded')==='true';
+    items.forEach(function(o){if(o!==item){o.querySelector('.cert-header').setAttribute('aria-expanded','false');o.querySelector('.cert-panel').style.height='0px'}});
+    h.setAttribute('aria-expanded',String(!ex));
+    p.style.height=ex?'0px':p.scrollHeight+'px';
+  });
+  addEventListener('resize',function(){if(h.getAttribute('aria-expanded')==='true')p.style.height=p.scrollHeight+'px'});
+});
+})();
+</script>
+</body>
+</html>
