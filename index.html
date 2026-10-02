@@ -203,6 +203,43 @@ body.cursor-click #cursorRing{width:68px;height:68px;margin:-34px}
 body[data-theme="dark"] #motionCanvas{opacity:.32}body[data-theme="dark"] .tilt-glow{mix-blend-mode:screen}
 @media(max-width:860px){#cursorCore,#cursorRing{display:none}}@media(max-width:640px){#motionCanvas{opacity:.22}.scroll-cue{display:none}}
 @media(prefers-reduced-motion:reduce){#motionCanvas,#cursorCore,#cursorRing{display:none}.hero .tag,.hero h1,.hero .role,.hero .lede,.hero .btns,.hero .hero-proof{animation:none}.project-card.in{animation:none}.scroll-cue{display:none}}
+/* mobile reliability + full-content visibility */
+.section-reveal{clip-path:none!important}
+.wrap{min-width:0}
+.card,.cap-card,.timeline-item,.timeline-card,.project-card,.cert-item,.cert-card{min-width:0;max-width:100%}
+.project-head,.project-details,.project-meta,.cert-header,.cert-title{min-width:0}
+.project-card h3,.cert-card h4,.cert-title,.timeline-card h3,.cap-card h3{overflow-wrap:anywhere;word-break:break-word}
+.project-details,.project-card.open .project-details{overflow:visible}
+@media(max-width:640px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  main,.wrap,section.s,footer{width:100%;max-width:100%}
+  section.s{overflow:visible}
+  .wrap{padding-left:18px;padding-right:18px}
+  .sh{margin-bottom:28px}
+  .sk,.cap-grid,.pj,.cert-cards{width:100%;min-width:0}
+  .sk .card,.cap-card,.pj .card,.cert-item,.cert-card{width:100%;min-width:0}
+  .cap-card.wide{display:block}
+  .signal-grid{grid-template-columns:1fr 1fr 1fr;min-width:0}
+  .project-head{grid-template-columns:44px minmax(0,1fr);gap:14px}
+  .project-head>div{min-width:0}
+  .project-open{max-width:100%;white-space:normal}
+  .project-meta{display:flex;flex-wrap:wrap}
+  .cert-header{gap:10px}
+  .cert-title{line-height:1.35}
+  .cert-title svg{flex:0 0 22px}
+  .cert-panel{overflow:hidden}
+  .cert-panel-inner{min-width:0}
+  .cert-card{overflow-wrap:anywhere}
+  .hero{width:100%}
+}
+@media(max-width:390px){
+  .wrap{padding-left:15px;padding-right:15px}
+  .signal-grid{grid-template-columns:1fr}
+  .project-head{grid-template-columns:38px minmax(0,1fr);gap:11px;padding-left:18px;padding-right:16px}
+  .project-number{font-size:1.9rem}
+  .project-meta,.project-details{padding-left:18px;padding-right:16px}
+  .cert-header{padding-left:14px;padding-right:14px}
+}
 </style>
 </head>
 <body>
@@ -231,7 +268,7 @@ body[data-theme="dark"] #motionCanvas{opacity:.32}body[data-theme="dark"] .tilt-
       <a href="#about">about</a><a href="#skills">skills</a><a href="#capabilities">build</a><a href="#experience">journey</a><a href="#projects">projects</a><a href="#certifications">certifications</a><a href="#contact">contact</a>
     </nav>
     <button class="tog" id="tog" aria-label="Toggle navigation" aria-expanded="false">menu</button>
-    <div class="nav-actions"><button class="command-btn" id="commandBtn" type="button" aria-label="Open quick navigation"><span>⌘</span><b>quick nav</b></button><button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to dark theme"><span>◐</span><b>theme</b></button><a class="cta" href="mailto:the.raghav.raman@gmail.com">say hello</a></div>
+    <div class="nav-actions"><button class="command-btn" id="commandBtn" type="button" aria-label="Open quick navigation"><span>⌘</span><b>quick nav</b></button><button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to dark theme"><span>◐</span><b>theme</b></button><a class="cta" href="http://cal.com/raghav-raman" target="_blank" rel="noopener">book a call ↗</a></div>
   </div>
 </header>
 
@@ -242,7 +279,7 @@ body[data-theme="dark"] #motionCanvas{opacity:.32}body[data-theme="dark"] .tilt-
       <h1>Raghav<br>Raman</h1>
       <p class="role" id="role">Python backend engineer</p>
       <p class="lede">Backend and data engineer with 4 years of experience building APIs, ETL pipelines and AI search systems with FastAPI, Django, MySQL, FAISS and RAG, deployed on Linux and Nginx.</p>
-      <div class="btns"><a class="b1" href="#projects">Explore my work ↓</a><a class="b2" href="mailto:the.raghav.raman@gmail.com">Get in touch</a></div>
+      <div class="btns"><a class="b1" href="#projects">Explore my work ↓</a><a class="b2" href="mailto:the.raghav.raman@gmail.com">Get in touch</a><a class="b2 cal-link" href="http://cal.com/raghav-raman" target="_blank" rel="noopener">Book a call ↗</a></div>
       <div class="hero-proof" aria-label="Portfolio highlights"><span><b>4+</b> years</span><i></i><span><b>7</b> featured builds</span><i></i><span><b>AI</b> + data focus</span></div>
     </div>
     <svg class="route" viewBox="0 0 380 380" fill="none" aria-hidden="true">
@@ -425,7 +462,7 @@ body[data-theme="dark"] #motionCanvas{opacity:.32}body[data-theme="dark"] .tilt-
     <h2 class="rv">Let's connect.</h2>
     <p class="i rv">Have a backend, data pipeline or AI search project in mind? Let's build it properly.</p>
     <div class="cl rv">
-      <a href="mailto:the.raghav.raman@gmail.com">the.raghav.raman@gmail.com</a>
+      <a href="mailto:the.raghav.raman@gmail.com">the.raghav.raman@gmail.com</a><a class="cal-link" href="http://cal.com/raghav-raman" target="_blank" rel="noopener">Book a call ↗</a>
       <a href="https://www.linkedin.com/in/theraghavraman" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/theraghavraman" target="_blank" rel="noopener">GitHub</a>
       <a href="https://www.credly.com/users/raghav-raman/" target="_blank" rel="noopener">Credly</a>
