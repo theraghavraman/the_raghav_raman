@@ -166,6 +166,14 @@ footer .i{color:var(--soft);max-width:48ch;margin:0 auto 32px}
 body[data-theme="dark"]{--ink:#F5F1E8;--soft:#B7B7C5;--sun:#FF9A3D;--sky:#6EA8FF;--leaf:#46C98A;--berry:#FF6D9F;--vio:#9C82FF;background:#10131A;color:var(--ink)}
 body[data-theme="dark"] header{background:rgba(16,19,26,.82);border-color:rgba(255,255,255,.1)}body[data-theme="dark"] .cta{background:#F5F1E8;color:#10131A}body[data-theme="dark"] .theme-btn,body[data-theme="dark"] .b2,body[data-theme="dark"] .card,body[data-theme="dark"] .cert-item,body[data-theme="dark"] .cert-card,body[data-theme="dark"] .cert-search input{background:rgba(25,29,39,.9);color:var(--ink);border-color:rgba(255,255,255,.1)}body[data-theme="dark"] .chips span,body[data-theme="dark"] .filter{background:rgba(255,255,255,.04);color:var(--ink);border-color:rgba(255,255,255,.16)}body[data-theme="dark"] .filter.active{background:#F5F1E8;color:#10131A}body[data-theme="dark"] .ribbon{background:#080A0F}body[data-theme="dark"] footer{background:linear-gradient(180deg,transparent,rgba(70,45,25,.4))}body[data-theme="dark"] .links a{color:#C7C7D1}body[data-theme="dark"] .route{background:rgba(20,24,32,.65)}body[data-theme="dark"] .hero-proof b{color:var(--ink)}body[data-theme="dark"] .cert-header{color:var(--ink)}
 @media(max-width:640px){.nav-actions{gap:5px}.theme-btn b{display:none}.hero-proof{gap:8px}.timeline::before{left:8px}.timeline-item{grid-template-columns:25px 1fr;gap:14px}.time-dot{grid-column:1;grid-row:1;margin:25px 0}.time-meta{grid-column:2;grid-row:1;text-align:left;padding:17px 0 0}.timeline-card{grid-column:2;grid-row:2;padding:18px}.timeline-item{margin-bottom:12px}.footer-line{gap:12px}}
+
+.command-btn{border:1px solid rgba(27,42,73,.16);background:rgba(255,255,255,.7);color:var(--ink);border-radius:99px;padding:8px 12px;font:500 .72rem var(--mono);cursor:pointer;display:flex;gap:6px;align-items:center;transition:.2s}.command-btn:hover{transform:translateY(-2px);border-color:var(--sky)}.command-btn span{font-size:.9rem}.command-btn b{font-weight:500}
+.cap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.cap-card{position:relative;overflow:hidden;background:rgba(255,255,255,.72);border:1px solid rgba(27,42,73,.1);border-radius:22px;padding:25px;box-shadow:0 10px 30px rgba(27,42,73,.06);transition:.25s}.cap-card::before{content:'';position:absolute;inset:auto -20% -60% 45%;height:170px;background:radial-gradient(circle,color-mix(in srgb,var(--c) 14%,transparent),transparent 65%);pointer-events:none}.cap-card:hover{transform:translateY(-6px);border-color:var(--c);box-shadow:0 18px 40px color-mix(in srgb,var(--c) 20%,transparent)}.cap-card.wide{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}.cap-icon{font:800 .7rem var(--mono);color:var(--c);letter-spacing:.1em;margin-bottom:12px}.cap-card h3{font:800 1.3rem var(--disp);margin-bottom:8px}.cap-card p{color:var(--soft);font-size:.92rem;max-width:55ch}.cap-flow{display:flex;align-items:center;gap:8px;margin-top:18px;font:500 .63rem var(--mono);color:var(--soft)}.cap-flow span{padding:5px 8px;border-radius:8px;background:color-mix(in srgb,var(--c) 9%,#fff);color:var(--c)}.cap-flow b{font-weight:500}.signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.signal-grid span{padding:14px 8px;text-align:center;border:1px dashed color-mix(in srgb,var(--c) 50%,transparent);border-radius:10px;font:500 .62rem var(--mono);color:var(--c);background:rgba(255,255,255,.35)}
+.spotlight{display:flex;align-items:center;gap:9px;margin:-8px 0 20px;padding:11px 14px;border:1px solid rgba(19,138,91,.18);background:rgba(19,138,91,.06);border-radius:12px;font:.68rem var(--mono);color:var(--soft);width:max-content;max-width:100%}.spotlight b{color:var(--leaf);font-weight:600}.spotlight-dot{width:7px;height:7px;background:var(--leaf);border-radius:50%;box-shadow:0 0 0 5px rgba(19,138,91,.1);animation:pulse 2s infinite}
+.command-palette{position:fixed;inset:0;z-index:200;display:none}.command-palette.open{display:block}.palette-backdrop{position:absolute;inset:0;background:rgba(8,10,15,.5);backdrop-filter:blur(8px)}.palette{position:relative;width:min(560px,calc(100% - 28px));margin:11vh auto 0;background:#fff;border:1px solid rgba(27,42,73,.14);border-radius:20px;box-shadow:0 30px 100px rgba(0,0,0,.25);overflow:hidden}.palette-head{display:flex;justify-content:space-between;padding:16px 18px 10px;font:700 .78rem var(--mono);color:var(--ink)}.palette kbd{border:1px solid rgba(27,42,73,.16);border-radius:5px;padding:2px 5px;font:500 .58rem var(--mono);background:rgba(27,42,73,.04)}.palette input{width:calc(100% - 28px);margin:4px 14px 12px;border:1px solid rgba(27,42,73,.13);border-radius:11px;padding:12px 13px;font:500 .78rem var(--mono);outline:none}.palette input:focus{border-color:var(--sky);box-shadow:0 0 0 4px rgba(37,99,235,.1)}.palette-list{max-height:390px;overflow:auto;padding:0 9px 9px}.palette-list button{width:100%;border:0;background:transparent;text-align:left;padding:11px 10px;border-radius:9px;color:var(--ink);font:500 .76rem var(--mono);cursor:pointer;display:flex;gap:12px}.palette-list button:hover,.palette-list button.selected{background:rgba(37,99,235,.08)}.palette-list button span{width:28px;color:var(--sky);font-size:.65rem}.palette-hint{border-top:1px solid rgba(27,42,73,.08);padding:11px 18px;color:var(--soft);font:500 .62rem var(--mono)}
+body[data-theme="dark"] .command-btn,body[data-theme="dark"] .palette{background:rgba(25,29,39,.96);color:var(--ink);border-color:rgba(255,255,255,.1)}body[data-theme="dark"] .cap-card{background:rgba(25,29,39,.82);border-color:rgba(255,255,255,.09)}body[data-theme="dark"] .cap-flow span{background:rgba(255,255,255,.05)}body[data-theme="dark"] .signal-grid span{background:rgba(255,255,255,.03)}body[data-theme="dark"] .palette input{background:#10131A;color:var(--ink);border-color:rgba(255,255,255,.12)}body[data-theme="dark"] .palette-list button{color:var(--ink)}
+@media(max-width:760px){.cap-grid{grid-template-columns:1fr}.cap-card.wide{grid-column:auto;grid-template-columns:1fr}.command-btn b{display:none}.spotlight{width:100%;align-items:flex-start;flex-wrap:wrap}}
+@media(max-width:640px){.signal-grid{grid-template-columns:repeat(2,1fr)}.command-btn{padding:8px 10px}}
 </style>
 </head>
 <body>
@@ -191,10 +199,10 @@ body[data-theme="dark"] header{background:rgba(16,19,26,.82);border-color:rgba(2
   <div class="nav">
     <a class="mark" href="#top"><i></i>Raghav Raman</a>
     <nav class="links" id="links">
-      <a href="#about">about</a><a href="#skills">skills</a><a href="#experience">journey</a><a href="#projects">projects</a><a href="#certifications">certifications</a><a href="#contact">contact</a>
+      <a href="#about">about</a><a href="#skills">skills</a><a href="#capabilities">build</a><a href="#experience">journey</a><a href="#projects">projects</a><a href="#certifications">certifications</a><a href="#contact">contact</a>
     </nav>
     <button class="tog" id="tog" aria-label="Toggle navigation" aria-expanded="false">menu</button>
-    <div class="nav-actions"><button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to dark theme"><span>◐</span><b>theme</b></button><a class="cta" href="mailto:the.raghav.raman@gmail.com">say hello</a></div>
+    <div class="nav-actions"><button class="command-btn" id="commandBtn" type="button" aria-label="Open quick navigation"><span>⌘</span><b>quick nav</b></button><button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to dark theme"><span>◐</span><b>theme</b></button><a class="cta" href="mailto:the.raghav.raman@gmail.com">say hello</a></div>
   </div>
 </header>
 
@@ -243,6 +251,16 @@ body[data-theme="dark"] header{background:rgba(16,19,26,.82);border-color:rgba(2
     </div>
   </div></section>
 
+  <section class="s capability-section" id="capabilities" data-zone="Noon"><div class="wrap">
+    <div class="sh rv"><p class="zone">02.25 · Noon</p><h2>What I like building</h2><p class="section-note">The common thread across my work: turning messy inputs into useful, searchable, dependable systems.</p></div>
+    <div class="cap-grid">
+      <article class="cap-card rv" style="--c:#2563EB"><div class="cap-icon">01</div><h3>Data → decisions</h3><p>ETL pipelines, validation, transformation and SQL systems that make operational data easier to trust and use.</p><div class="cap-flow"><span>source</span><b>→</b><span>transform</span><b>→</b><span>serve</span></div></article>
+      <article class="cap-card rv" style="--c:#D6336C"><div class="cap-icon">02</div><h3>Documents → answers</h3><p>RAG and semantic retrieval systems that turn unstructured knowledge into grounded application experiences.</p><div class="cap-flow"><span>docs</span><b>→</b><span>vectors</span><b>→</b><span>answer</span></div></article>
+      <article class="cap-card rv" style="--c:#138A5B"><div class="cap-icon">03</div><h3>Events → automation</h3><p>Background jobs, queues, browser automation and desktop tooling that remove repetitive work from a workflow.</p><div class="cap-flow"><span>event</span><b>→</b><span>worker</span><b>→</b><span>result</span></div></article>
+      <article class="cap-card wide rv" style="--c:#F0651A"><div><div class="cap-icon">04</div><h3>Systems that stay observable</h3><p>I care about the layer after “it works”: indexes, caching, pagination, structured APIs, logging, deployment and maintainability.</p></div><div class="signal-grid"><span>API</span><span>DB</span><span>QUEUE</span><span>CACHE</span><span>VECTOR</span><span>LINUX</span></div></article>
+    </div>
+  </div></section>
+
   <section class="s experience" id="experience" data-zone="Early afternoon"><div class="wrap">
     <div class="sh rv"><p class="zone">02.5 · Early afternoon</p><h2>Experience &amp; trajectory</h2></div>
     <div class="timeline">
@@ -269,6 +287,7 @@ body[data-theme="dark"] header{background:rgba(16,19,26,.82);border-color:rgba(2
 
   <section class="s" id="projects" data-zone="Midday"><div class="wrap">
     <div class="sh rv"><p class="zone">04 · Midday</p><h2>Featured projects</h2><p class="section-note">A few systems I have designed, built, tuned and shipped.</p></div>
+    <div class="spotlight rv"><span class="spotlight-dot"></span><b>Currently highlighting</b><span>AI data platforms · backend APIs · retrieval systems</span></div>
     <div class="project-filters rv" role="toolbar" aria-label="Filter projects"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="backend">Backend</button><button class="filter" data-filter="data">Data / ETL</button><button class="filter" data-filter="ai">AI / RAG</button><button class="filter" data-filter="desktop">Desktop</button></div>
     <div class="pj">
       <article class="card rv project-card" data-tags="backend data ai" style="--c:#2563EB"><div class="n">01</div><div>
@@ -374,6 +393,25 @@ body[data-theme="dark"] header{background:rgba(16,19,26,.82);border-color:rgba(2
   </div></section>
 </main>
 
+<div class="command-palette" id="commandPalette" aria-hidden="true">
+  <div class="palette-backdrop" data-close-palette></div>
+  <div class="palette" role="dialog" aria-modal="true" aria-labelledby="paletteTitle">
+    <div class="palette-head"><span id="paletteTitle">Quick navigation</span><kbd>ESC</kbd></div>
+    <input id="paletteInput" type="search" placeholder="Jump to a section…" autocomplete="off">
+    <div class="palette-list" id="paletteList">
+      <button data-jump="#top"><span>⌂</span>Home</button>
+      <button data-jump="#about"><span>01</span>About</button>
+      <button data-jump="#skills"><span>02</span>Skills</button>
+      <button data-jump="#capabilities"><span>03</span>What I build</button>
+      <button data-jump="#experience"><span>04</span>Journey</button>
+      <button data-jump="#projects"><span>05</span>Projects</button>
+      <button data-jump="#certifications"><span>06</span>Certifications</button>
+      <button data-jump="#contact"><span>07</span>Contact</button>
+    </div>
+    <p class="palette-hint">Press <kbd>Ctrl</kbd> + <kbd>K</kbd> anytime</p>
+  </div>
+</div>
+
 <footer id="contact" data-zone="Golden hour">
   <div class="wrap">
     <p class="zone rv">06 · Golden hour</p>
@@ -463,6 +501,19 @@ items.forEach(function(item){
 
   var input=document.getElementById('certSearch'), certs=document.querySelectorAll('.cert-item');
   input.addEventListener('input',function(){var q=input.value.toLowerCase().trim();certs.forEach(function(item){var match=!q||item.textContent.toLowerCase().includes(q);item.classList.toggle('cert-hidden',!match)})});
+})();
+
+/* quick navigation */
+(function(){
+  var btn=document.getElementById('commandBtn'),modal=document.getElementById('commandPalette'),input=document.getElementById('paletteInput'),list=document.getElementById('paletteList');
+  if(!btn||!modal)return;
+  function open(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');input.value='';filter('');setTimeout(function(){input.focus()},30)}
+  function close(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');btn.focus()}
+  function filter(q){var items=list.querySelectorAll('button[data-jump]');items.forEach(function(x){x.hidden=q&&!x.textContent.toLowerCase().includes(q.toLowerCase())})}
+  btn.addEventListener('click',open);document.querySelectorAll('[data-close-palette]').forEach(function(x){x.addEventListener('click',close)});
+  input.addEventListener('input',function(){filter(input.value)});
+  list.addEventListener('click',function(e){var b=e.target.closest('button[data-jump]');if(b){close();document.querySelector(b.dataset.jump).scrollIntoView({behavior:'smooth'})}});
+  document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open()}if(e.key==='Escape'&&modal.classList.contains('open'))close()});
 })();
 </script>
 </body>
