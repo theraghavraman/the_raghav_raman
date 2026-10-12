@@ -807,7 +807,7 @@ dialog::backdrop {background:rgb(41 42 36 / 42%);backdrop-filter:blur(5px)}
 /* Reference Interaction Lab: real pointer-reactive canvas and three modes. */
 .interaction-lab-section { padding-top:94px; padding-bottom:100px; }
 .play-panel { position:relative; isolation:isolate; overflow:hidden; min-height:440px; padding:32px 39px; background:#e8eadb; border:1px solid #d1d6c1; color:#292a24; }
-.play-panel::before { content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg,rgba(232,234,219,.96),rgba(232,234,219,.91) 28%,rgba(232,234,219,.10) 76%,transparent); pointer-events:none; }
+.play-panel::before { content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg,rgba(232,234,219,.92),rgba(232,234,219,.92) 25%,transparent 51%); pointer-events:none; }
 #play-canvas { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:pan-y; }
 #play-canvas:focus-visible { outline-offset:-10px; }
 .play-topline { position:relative; z-index:3; display:flex; justify-content:space-between; align-items:center; gap:20px; pointer-events:none; }
@@ -878,7 +878,7 @@ dialog::backdrop {background:rgb(41 42 36 / 42%);backdrop-filter:blur(5px)}
  .hero-wip-caption { font-size:6px; gap:8px; }
  .interaction-lab-section { padding-top:65px; padding-bottom:70px; }
  .play-panel { min-height:540px; padding:22px 20px; }
- .play-panel::before { background:linear-gradient(180deg,rgba(232,234,219,.96),rgba(232,234,219,.91) 37%,rgba(232,234,219,.16) 71%,transparent); }
+ .play-panel::before { background:linear-gradient(180deg,rgba(232,234,219,.92),rgba(232,234,219,.92) 34%,transparent 70%); }
  .play-topline { align-items:flex-start; gap:10px; }
  .play-topline .eyebrow { font-size:7px; }
  .play-topline>.mono { font-size:6px; text-align:right; }
@@ -1298,70 +1298,76 @@ dialog::backdrop {background:rgb(41 42 36 / 42%);backdrop-filter:blur(5px)}
   });
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&!e.repeat){e.preventDefault();if(palette.open)palette.close();else openPalette();}});
 
-  // Interaction Lab: responsive browser-native particle field (no external dependency).
-  function initPlayground(){
-    const canvas=$('#play-canvas'),stage=$('#interactionLab'),buttons=$$('.play-mode-button');
-    if(!canvas||!stage)return;
-    let ctx;try{ctx=canvas.getContext('2d');}catch{return;}
-    if(!ctx){buttons.forEach(b=>b.disabled=true);return;}
-    let w=1,h=1,phase=0,frame=0,last=0,lastDraw=0,visible=false,paused=!motionEnabled,mode='wave';
-    const pointer={x:-1000,y:-1000},ripples=[];
-    function resize(){
-      const r=stage.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,1.6);
-      w=Math.max(1,r.width);h=Math.max(1,r.height);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw();
+  // Particle field ported from the supplied standalone file, keeping its exact geometry,
+  // timing, pointer response, ripple propagation, responsive density, and three modes.
+  const LAB_TAU = Math.PI * 2;
+  class InteractionLabParticleField {
+    constructor(canvas) {
+      this.canvas=canvas;this.ctx=canvas.getContext('2d');if(!this.ctx)return;
+      this.frame=0;this.visible=false;this.paused=false;this.time=0;this.last=0;this.lastDraw=0;this.mode='wave';this.ripples=[];this.pointer={x:-1000,y:-1000};this.width=0;this.height=0;
+      this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(canvas);
+      this.observer=new IntersectionObserver(e=>{this.visible=e[0].isIntersecting;this.visible?this.start():this.stop();},{rootMargin:'0px'});this.observer.observe(canvas);
+      canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect();this.pointer={x:e.clientX-r.left,y:e.clientY-r.top};if(this.paused||reduced.matches)this.draw();});
+      canvas.addEventListener('pointerleave',()=>{this.pointer={x:-1000,y:-1000};if(this.paused||reduced.matches)this.draw();});
+      canvas.addEventListener('pointerdown',e=>{const r=canvas.getBoundingClientRect();this.ripple(e.clientX-r.left,e.clientY-r.top);});
+      canvas.addEventListener('keydown',e=>{if(e.code==='Space'||e.key==='Enter'){e.preventDefault();this.ripple(this.width*.67,this.height*.55);}});
+      document.addEventListener('visibilitychange',()=>document.hidden?this.stop():this.start());
+      this.resize();
     }
-    function makeRipple(x,y){ripples.push({x,y,t:phase});if(ripples.length>6)ripples.shift();draw();}
-    function draw(){
-      if(!ctx||!w||!h)return;
-      ctx.clearRect(0,0,w,h);
-      const mobile=w<600,cols=mobile?34:52,rows=mobile?19:29,points=[],cx=w*(mobile?.51:.73),cy=h*(mobile?.62:.52),scale=mobile?w/7.5:w/12.2;
-      for(let r=0;r<rows;r++){
-        const line=[];
-        for(let c=0;c<cols;c++){
+    resize(){const r=this.canvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,1.6);this.width=r.width;this.height=r.height;this.canvas.width=Math.round(r.width*dpr);this.canvas.height=Math.round(r.height*dpr);this.ctx.setTransform(dpr,0,0,dpr,0,0);this.draw();}
+    ripple(x,y){this.ripples.push({x,y,time:this.time});if(this.ripples.length>6)this.ripples.shift();this.draw();}
+    setMode(mode){if(!['wave','orbit','grid'].includes(mode))return;this.mode=mode;this.draw();}
+    draw(){
+      const ctx=this.ctx,w=this.width,h=this.height;if(!w||!h)return;
+      ctx.clearRect(0,0,w,h);const mobile=w<600;
+      const cx=w*(mobile?.51:.73),cy=h*(mobile?.62:.52),scale=mobile?w/7.6:w/12.2;
+      const rows=mobile?23:29,cols=mobile?38:51,t=this.time,points=[];
+      for(let r=0;r<rows;r++) {
+        const row=[];
+        for(let c=0;c<cols;c++) {
           let x=(c/(cols-1)-.5)*7.3,z=(r/(rows-1)-.5)*5.7,y=0;
-          if(mode==='wave')y=Math.sin(x*1.12+phase*.62)*Math.cos(z*.73+phase*.21)*.56+Math.sin(z*1.7+x*.7+phase*.43)*.12;
-          else if(mode==='orbit'){const angle=c/(cols-1)*Math.PI*2+phase*.11,radius=.9+r/(rows-1)*2.1;x=Math.cos(angle)*radius;z=Math.sin(angle)*radius;y=Math.sin(angle*3+phase*.6)*.34+Math.cos(radius*2.3-phase*.6)*.18;}
-          else y=Math.sin(x*.5+z*.5+phase*.32)*.08;
+          if(this.mode==='wave')y=Math.sin(x*1.12+t*.62)*Math.cos(z*.73+t*.21)*.56+Math.sin(z*1.7+x*.7+t*.43)*.12;
+          else if(this.mode==='orbit'){const angle=c/(cols-1)*LAB_TAU+t*.11,radius=.9+r/(rows-1)*2.1;x=Math.cos(angle)*radius;z=Math.sin(angle)*radius;y=Math.sin(angle*3+t*.6)*.34+Math.cos(radius*2.3-t*.6)*.18;}
+          else y=Math.sin(x*.5+z*.5+t*.32)*.08;
           let sx=cx+(x*.92+z*.35)*scale,sy=cy+(z*.40-x*.16-y*1.13)*scale;
-          const distance=Math.hypot(sx-pointer.x,sy-pointer.y),influence=Math.exp(-distance*distance/13000);
+          const distance=Math.hypot(sx-this.pointer.x,sy-this.pointer.y),influence=Math.exp(-distance*distance/13000);
           sy-=influence*22;
-          for(const ripple of ripples){const age=phase-ripple.t,d=Math.hypot(sx-ripple.x,sy-ripple.y),ring=d-age*155;sy-=Math.sin(ring*.034)*Math.exp(-ring*ring/18000)*Math.exp(-age*.60)*14;}
-          const depth=(z+3)/6;line.push({x:sx,y:sy,r:.85+depth*.55+influence*.7,a:.34+depth*.38+influence*.2,c:(c+r)%9===0?'167,92,52':'81,105,61'});
+          for(const ripple of this.ripples){const age=t-ripple.time,d=Math.hypot(sx-ripple.x,sy-ripple.y),ring=d-age*155;sy-=Math.sin(ring*.034)*Math.exp(-ring*ring/18000)*Math.exp(-age*.60)*14;}
+          const depth=(z+3)/6,alpha=.34+depth*.38+influence*.2;row.push({x:sx,y:sy,r:.85+depth*.55+influence*.7,a:alpha,c:(c+r)%9===0?'167,92,52':'81,105,61'});
         }
-        points.push(line);
+        points.push(row);
       }
       ctx.lineWidth=.55;
       for(let r=0;r<rows;r+=2){ctx.strokeStyle='rgba(83,102,58,.19)';ctx.beginPath();points[r].forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();}
       for(let c=0;c<cols;c+=3){ctx.strokeStyle='rgba(154,105,67,.105)';ctx.beginPath();points.forEach((row,i)=>i?ctx.lineTo(row[c].x,row[c].y):ctx.moveTo(row[c].x,row[c].y));ctx.stroke();}
-      for(const row of points)for(const p of row){ctx.fillStyle='rgba('+p.c+','+p.a.toFixed(2)+')';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();}
-      for(let i=ripples.length-1;i>=0;i--)if(phase-ripples[i].t>=7)ripples.splice(i,1);
-      canvas.dataset.mode=mode;
+      for(const row of points)for(const p of row){ctx.fillStyle='rgba('+p.c+','+p.a.toFixed(2)+')';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,LAB_TAU);ctx.fill();}
+      this.ripples=this.ripples.filter(r=>t-r.time<7);
     }
-    function tick(now){
-      frame=0;if(!visible||document.hidden||paused||!pageActive)return;
-      const dt=last?Math.min((now-last)/1000,.05):.016;last=now;phase+=dt;
-      if(now-lastDraw>=1000/30){draw();lastDraw=now;}
-      frame=requestAnimationFrame(tick);
-    }
-    function start(){if(!frame&&visible&&!paused&&!document.hidden&&pageActive){last=0;frame=requestAnimationFrame(tick);}}
-    function stop(){if(frame)cancelAnimationFrame(frame);frame=0;last=0;}
-    function setPaused(value){paused=value;if(paused)stop();else start();draw();}
-    function selectMode(next){
-      if(!['wave','orbit','grid'].includes(next))return;mode=next;
-      buttons.forEach(b=>{const active=b.dataset.playMode===mode;b.classList.toggle('is-active',active);b.setAttribute('aria-pressed',String(active));});
-      const labels={wave:'FIELD IN MOTION',orbit:'ORBITAL FORM',grid:'STRUCTURED FIELD'};
-      $('#lab-mode-label').textContent=labels[mode];draw();
-    }
-    buttons.forEach(b=>{b.disabled=false;b.addEventListener('click',()=>selectMode(b.dataset.playMode));});
-    canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect();pointer.x=e.clientX-r.left;pointer.y=e.clientY-r.top;if(paused||reduced.matches)draw();},{passive:true});
-    canvas.addEventListener('pointerleave',()=>{pointer.x=-1000;pointer.y=-1000;if(paused||reduced.matches)draw();});
-    canvas.addEventListener('pointerdown',e=>{const r=canvas.getBoundingClientRect();makeRipple(e.clientX-r.left,e.clientY-r.top);});
-    canvas.addEventListener('keydown',e=>{if(e.code==='Space'||e.key==='Enter'){e.preventDefault();makeRipple(w*.67,h*.55);}});
-    if('ResizeObserver'in window)new ResizeObserver(resize).observe(stage);else addEventListener('resize',resize,{passive:true});
-    if('IntersectionObserver'in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;visible?start():stop();},{rootMargin:'0px'}).observe(stage);else visible=true;
-    motionListeners.add(()=>setPaused(!motionEnabled));
-    document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
-    selectMode('wave');resize();start();
+    tick=now=>{this.frame=0;if(!this.visible||document.hidden||this.paused||reduced.matches)return;const dt=this.last?Math.min((now-this.last)/1000,.05):.016;this.last=now;this.time+=dt;if(now-this.lastDraw>32){this.draw();this.lastDraw=now;}this.frame=requestAnimationFrame(this.tick);};
+    start(){if(!this.frame&&this.visible&&!this.paused&&!reduced.matches&&!document.hidden){this.last=0;this.frame=requestAnimationFrame(this.tick);}}
+    stop(){cancelAnimationFrame(this.frame);this.frame=0;this.last=0;}
+    setPaused(p){this.paused=p;p?this.stop():this.start();this.draw();}
+  }
+  function initPlayground(){
+    const canvas=$('#play-canvas'),buttons=$$('.play-mode-button');
+    if(!canvas)return;
+    let lab;
+    try { lab=new InteractionLabParticleField(canvas); }
+    catch(error) { console.error('Interaction Lab initialization failed:',error);buttons.forEach(b=>b.disabled=true);return; }
+    if(!lab.ctx){buttons.forEach(b=>b.disabled=true);return;}
+    const labels={wave:'FIELD IN MOTION',orbit:'ORBITAL FORM',grid:'STRUCTURED FIELD'};
+    buttons.forEach(button=>{
+      button.disabled=false;
+      button.addEventListener('click',()=>{
+        const mode=button.dataset.playMode;
+        lab.setMode(mode);
+        buttons.forEach(b=>{const active=b.dataset.playMode===mode;b.classList.toggle('is-active',active);b.setAttribute('aria-pressed',String(active));});
+        $('#lab-mode-label').textContent=labels[mode]||labels.wave;
+      });
+    });
+    buttons.forEach(button=>{const active=button.dataset.playMode==='wave';button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));});
+    lab.setMode('wave');
+    motionListeners.add(()=>lab.setPaused(!motionEnabled));
   }
   if('IntersectionObserver'in window){const observer=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('is-current',e.isIntersecting)),{rootMargin:'-25% 0px -40% 0px'});$$('.process-steps li').forEach(s=>observer.observe(s));}
   document.addEventListener('visibilitychange',()=>{body.classList.toggle('is-background',document.hidden);syncRole();});
