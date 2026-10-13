@@ -182,11 +182,11 @@ h1 em {font-family:var(--serif);font-weight:400;letter-spacing:-.025em;font-size
 .preview-arrow .icon {width:17px;height:17px}
 
 /* Reference-style green cursor that appears over project previews. */
-.project-cursor {position:fixed;left:0;top:0;z-index:90;width:84px;height:84px;border-radius:50%;display:grid;align-content:center;justify-items:center;gap:2px;background:var(--lime);color:var(--ink);pointer-events:none;opacity:0;will-change:transform;transition:opacity .2s}
+.project-cursor {position:fixed;left:0;top:0;z-index:120;width:84px;height:84px;border-radius:50%;display:grid;align-content:center;justify-items:center;gap:2px;background:var(--lime);color:var(--ink);pointer-events:none;opacity:0;will-change:transform;transition:opacity .2s}
 .project-cursor span {font:8px/1.35 var(--mono);letter-spacing:.07em;text-align:center}
 .project-cursor::after {content:"";position:absolute;inset:5px;border:1px solid rgb(0 0 0 / 18%);border-radius:50%}
 .project-cursor.is-active {opacity:1}
-@media (hover:hover) and (pointer:fine) {.project-preview {cursor:none}}
+body.project-cursor-active .project-preview {cursor:none}
 .visual-disclosure {font:8px/1.6 var(--mono);color:var(--muted);margin:12px 0 20px;letter-spacing:.01em}
 .project-body h3 {font-size:clamp(21px,1.8vw,28px);line-height:1.25;letter-spacing:-.04em;max-width:28ch;margin-bottom:15px}
 .project-summary {font-size:13px;color:var(--muted);line-height:1.85;max-width:57ch}
@@ -361,7 +361,7 @@ details[open]>summary>.icon {transform:rotate(45deg)}
 .contact-orbit:hover .icon {transform:translate(4px,-4px)}
 
 /* Rotating type ring around the existing contact action. */
-.contact-orbit-type {position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1;transform-origin:50% 50%;animation:contactOrbitSpin 28s linear infinite}
+.contact-orbit-type {position:absolute;inset:-34px;width:calc(100% + 68px);height:calc(100% + 68px);overflow:visible;pointer-events:none;z-index:1;transform-origin:50% 50%;animation:contactOrbitSpin 28s linear infinite}
 .contact-orbit-type text {fill:var(--olive);font-family:var(--mono);font-size:8.5px;letter-spacing:1.35px}
 .contact-orbit>span,.contact-orbit>.icon {position:relative;z-index:2}
 @keyframes contactOrbitSpin {to {transform:rotate(360deg)}}
@@ -1058,10 +1058,12 @@ dialog::backdrop {background:rgb(41 42 36 / 42%);backdrop-filter:blur(5px)}
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 
-  // A smooth, accessible pointer cue for desktop project previews only.
+  // Green VIEW PROJECT cursor: follows project previews and survives scrolling/filtering.
   const projectCursor = $('#projectCursor');
   let projectCursorFrame = 0, projectCursorActive = false;
   let projectCursorX = 0, projectCursorY = 0, projectCursorTargetX = 0, projectCursorTargetY = 0;
+  let lastPointerX = -1, lastPointerY = -1, lastPointerKnown = false, activeProjectPreview = null;
+
   function animateProjectCursor() {
     projectCursorX += (projectCursorTargetX - projectCursorX) * .21;
     projectCursorY += (projectCursorTargetY - projectCursorY) * .21;
@@ -1069,34 +1071,73 @@ dialog::backdrop {background:rgb(41 42 36 / 42%);backdrop-filter:blur(5px)}
     if (projectCursorActive) projectCursorFrame = requestAnimationFrame(animateProjectCursor);
     else projectCursorFrame = 0;
   }
+  function resetProjectPreview(preview) {
+    if (!preview) return;
+    preview.style.setProperty('--rx', '0deg');
+    preview.style.setProperty('--ry', '0deg');
+  }
   function hideProjectCursor() {
     projectCursorActive = false;
     projectCursor.classList.remove('is-active');
+    body.classList.remove('project-cursor-active');
     cancelAnimationFrame(projectCursorFrame);
     projectCursorFrame = 0;
+    resetProjectPreview(activeProjectPreview);
+    activeProjectPreview = null;
   }
-  $('.project-preview').forEach(preview => {
-    let previewRect;
-    preview.addEventListener('pointerenter', event => {
-      if (!finePointer.matches || reduced.matches || body.classList.contains('is-paused')) return;
-      previewRect = preview.getBoundingClientRect();
-      projectCursorX = projectCursorTargetX = event.clientX;
-      projectCursorY = projectCursorTargetY = event.clientY;
+  function updateProjectCursor() {
+    if (!lastPointerKnown || !finePointer.matches || reduced.matches || body.classList.contains('is-paused') || body.classList.contains('modal-open')) {
+      hideProjectCursor();
+      return;
+    }
+    const hit = document.elementFromPoint(lastPointerX, lastPointerY);
+    const preview = hit && hit.closest ? hit.closest('.project-preview') : null;
+    if (!preview) {
+      hideProjectCursor();
+      return;
+    }
+    if (activeProjectPreview && activeProjectPreview !== preview) resetProjectPreview(activeProjectPreview);
+    activeProjectPreview = preview;
+    const rect = preview.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const x = (lastPointerX - rect.left) / rect.width - .5;
+      const y = (lastPointerY - rect.top) / rect.height - .5;
+      preview.style.setProperty('--rx', `${-y * 3}deg`);
+      preview.style.setProperty('--ry', `${x * 3}deg`);
+    }
+    projectCursorTargetX = lastPointerX;
+    projectCursorTargetY = lastPointerY;
+    if (!projectCursorActive) {
+      projectCursorX = projectCursorTargetX;
+      projectCursorY = projectCursorTargetY;
       projectCursorActive = true;
       projectCursor.classList.add('is-active');
-      if (!projectCursorFrame) projectCursorFrame = requestAnimationFrame(animateProjectCursor);
-    });
-    preview.addEventListener('pointermove', event => {
-      if (!finePointer.matches || reduced.matches || body.classList.contains('is-paused')) return;
-      projectCursorTargetX = event.clientX;
-      projectCursorTargetY = event.clientY;
-    });
-    preview.addEventListener('pointerleave', () => {
+      body.classList.add('project-cursor-active');
+    }
+    if (!projectCursorFrame) projectCursorFrame = requestAnimationFrame(animateProjectCursor);
+  }
+
+  document.addEventListener('pointermove', event => {
+    if (event.pointerType === 'touch') {
+      lastPointerKnown = false;
       hideProjectCursor();
-      previewRect = null;
-    });
+      return;
+    }
+    lastPointerX = event.clientX;
+    lastPointerY = event.clientY;
+    lastPointerKnown = true;
+    updateProjectCursor();
+  }, {passive:true});
+  window.addEventListener('scroll', updateProjectCursor, {passive:true});
+  window.addEventListener('resize', updateProjectCursor, {passive:true});
+  window.addEventListener('blur', () => {
+    lastPointerKnown = false;
+    hideProjectCursor();
   });
-  window.addEventListener('blur', hideProjectCursor);
+  document.documentElement.addEventListener('pointerleave', () => {
+    lastPointerKnown = false;
+    hideProjectCursor();
+  });
   const menuBreakpoint = matchMedia('(max-width: 1120px)');
   const storage = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
