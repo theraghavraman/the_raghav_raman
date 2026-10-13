@@ -360,11 +360,19 @@ details[open]>summary>.icon {transform:rotate(45deg)}
 .contact-orbit:hover {background:var(--sage);border-color:var(--olive)}
 .contact-orbit:hover .icon {transform:translate(4px,-4px)}
 
-/* Rotating type ring around the existing contact action. */
-.contact-orbit-type {position:absolute;inset:-34px;width:calc(100% + 68px);height:calc(100% + 68px);overflow:visible;pointer-events:none;z-index:1;transform-origin:50% 50%;animation:contactOrbitSpin 28s linear infinite}
+/* Reference-matched orbit: spinning dashed halo plus readable circular lettering. */
+.contact-orbit {position:relative;isolation:isolate;overflow:visible;z-index:1}
+.contact-orbit::before {display:none}
+.contact-orbit::after {content:"";position:absolute;inset:-13px;top:auto;left:auto;width:auto;height:auto;border:1px dashed #98a382;border-radius:50%;background:transparent;box-shadow:none;pointer-events:none;z-index:0;animation:contactOrbitSpin 50s linear infinite}
+.contact-orbit-type {position:absolute!important;inset:auto!important;left:-34px!important;top:-34px!important;width:calc(100% + 68px)!important;height:calc(100% + 68px)!important;max-width:none!important;overflow:visible;pointer-events:none;z-index:3;transform-origin:50% 50%;animation:contactOrbitTextSpin 28s linear infinite}
 .contact-orbit-type text {fill:var(--olive);font-family:var(--mono);font-size:8.5px;letter-spacing:1.35px}
 .contact-orbit>span,.contact-orbit>.icon {position:relative;z-index:2}
 @keyframes contactOrbitSpin {to {transform:rotate(360deg)}}
+@keyframes contactOrbitTextSpin {to {transform:rotate(360deg)}}
+@media (max-width:680px) {
+ .contact-orbit::after {inset:-7px;top:auto;left:auto;width:auto;height:auto}
+ .contact-orbit-type {left:-25px!important;top:-25px!important;width:calc(100% + 50px)!important;height:calc(100% + 50px)!important}
+}
 .contact-links {display:flex;gap:32px;align-items:center;flex-wrap:wrap;margin:53px 0 52px}
 .contact-links .text-link {font-size:11px;border-color:#b1b1a1}
 .footer-baseline {display:flex;justify-content:space-between;gap:40px;align-items:center;border-top:1px solid #cec8ba;padding:28px 0 33px}
