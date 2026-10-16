@@ -458,3 +458,6 @@ activateSpatialDetails();
 addCapabilitiesFlow();
 enrichProjectDialogs();
 activateHero();
+
+// Text scramble layer; loaded separately so a failure there never affects the 3D layer.
+import('./scramble.js').catch(() => {});
