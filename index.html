@@ -1504,6 +1504,12 @@ dialog::backdrop {background:rgb(41 42 36 / 42%);backdrop-filter:blur(5px)}
 })();
 </script>
   <script type="module" src="./assets/js/immersive.js"></script>
-  <script src="fluid-cursor.js" defer></script>
+  <script>
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      const fluidCursorScript = document.createElement("script");
+      fluidCursorScript.src = "fluid-cursor.js";
+      document.body.appendChild(fluidCursorScript);
+    }
+  </script>
 </body>
 </html>
