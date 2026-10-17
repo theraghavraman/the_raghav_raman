@@ -198,9 +198,13 @@ body { background-image: radial-gradient(ellipse at 77% 2%, rgba(185,217,122,.07
  .contact-layout {grid-template-columns:minmax(0,1fr) 215px;}
 }
 /* Text scramble: a scrambling letter keeps its box (and its place for search, copy and
-   screen readers) with a transparent fill; the glyph is painted over it, tinted copper. */
-sx-c {position:relative;-webkit-text-fill-color:transparent}
-sx-c::after {content:attr(data-g);content:attr(data-g) / "";position:absolute;left:50%;top:0;line-height:normal;transform:translateX(-50%);white-space:pre;pointer-events:none;font-family:"Noto Sans Egyptian Hieroglyphs","Segoe UI Historic","Arial Unicode MS",serif;font-size:1.08em;-webkit-text-fill-color:currentColor;-webkit-text-fill-color:color-mix(in srgb,currentColor 35%,var(--copper));text-shadow:0 0 8px color-mix(in srgb,var(--copper) 45%,transparent)}
+   screen readers) with a transparent fill; the glyph is painted over it, tinted copper.
+   Hieroglyphs are a full em tall, so they are drawn at --sx-k of the text size (tall signs
+   then match the cap height) and stand on the text baseline: the letter's box ends .29em
+   below it in Manrope, Instrument Serif and Plex Mono alike, and at line-height 1 a
+   hieroglyph's box ends on its own baseline. */
+sx-c {position:relative;-webkit-text-fill-color:transparent;--sx-k:.72}
+sx-c::after {content:attr(data-g);content:attr(data-g) / "";position:absolute;left:50%;bottom:calc(.29em / var(--sx-k));line-height:1;transform:translateX(-50%);white-space:pre;pointer-events:none;font-family:"Noto Sans Egyptian Hieroglyphs","Segoe UI Historic","Arial Unicode MS",serif;font-size:calc(var(--sx-k) * 1em);font-style:normal;-webkit-text-fill-color:currentColor;-webkit-text-fill-color:color-mix(in srgb,currentColor 35%,var(--copper));text-shadow:0 0 .3em color-mix(in srgb,var(--copper) 45%,transparent)}
 
 
 /* 15 Self-hosted portfolio soundtrack — opt-in, responsive, and theme-aware. */
