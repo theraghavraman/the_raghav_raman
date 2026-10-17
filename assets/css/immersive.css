@@ -200,4 +200,4 @@ body { background-image: radial-gradient(ellipse at 77% 2%, rgba(185,217,122,.07
 /* Text scramble: a scrambling letter keeps its box (and its place for search, copy and
    screen readers) with a transparent fill; the glyph is painted over it, tinted copper. */
 sx-c {position:relative;-webkit-text-fill-color:transparent}
-sx-c::after {content:attr(data-g);content:attr(data-g) / "";position:absolute;left:50%;top:0;line-height:normal;transform:translateX(-50%);white-space:pre;pointer-events:none;-webkit-text-fill-color:currentColor;-webkit-text-fill-color:color-mix(in srgb,currentColor 45%,var(--copper))}
+sx-c::after {content:attr(data-g);content:attr(data-g) / "";position:absolute;left:50%;top:0;line-height:normal;transform:translateX(-50%);white-space:pre;pointer-events:none;font-family:"Noto Sans Egyptian Hieroglyphs","Segoe UI Historic","Arial Unicode MS",serif;font-size:1.08em;-webkit-text-fill-color:currentColor;-webkit-text-fill-color:color-mix(in srgb,currentColor 35%,var(--copper));text-shadow:0 0 8px color-mix(in srgb,var(--copper) 45%,transparent)}
