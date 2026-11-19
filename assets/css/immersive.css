@@ -48,7 +48,7 @@ body { background-image: radial-gradient(ellipse at 77% 2%, rgba(185,217,122,.07
 .project-card:focus-within .project-body h3,.project-card:hover .project-body h3 {color:var(--olive);}
 .project-body h3 {transition:color .25s}
 .preview-index {z-index:4;background:rgba(250,248,241,.76);backdrop-filter:blur(9px);padding:6px 8px;left:14px;top:13px;}
-.project-aadi .preview-index {background:rgba(41,49,38,.54)}
+.project-idra .preview-index {background:rgba(41,49,38,.54)}
 .preview-arrow {z-index:4;box-shadow:0 3px 16px rgba(29,46,20,.14)}
 .project-cursor {box-shadow:0 13px 36px rgba(59,73,33,.23)}
 .project-dialog[open] {animation:studio-dialog-in .32s var(--studio-ease)}
